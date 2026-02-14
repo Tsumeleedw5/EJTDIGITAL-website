@@ -81,17 +81,10 @@ function initScrollSpy() {
   });
 
   sections.forEach(sec => obs.observe(sec));
-
-  links.forEach(a => {
-    a.addEventListener("click", () => {
-      const id = a.getAttribute("href").slice(1);
-      setActive(id);
-    });
-  });
 }
 
 // =========================
-// Reveal (slide/fade in) — About logo + slogan
+// Reveal (general sections)
 // =========================
 function initReveal(){
   const els = Array.from(document.querySelectorAll("[data-reveal]"));
@@ -107,6 +100,29 @@ function initReveal(){
   }, { threshold: 0.25 });
 
   els.forEach(el => obs.observe(el));
+}
+
+// =========================
+// Steps animation (stagger in)
+// =========================
+function initStepsReveal(){
+  const items = Array.from(document.querySelectorAll("[data-step]"));
+  if (!items.length) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+
+      items.forEach((el, i) => {
+        setTimeout(() => el.classList.add("is-visible"), i * 120);
+      });
+
+      obs.disconnect();
+    });
+  }, { threshold: 0.25 });
+
+  const stepsSection = document.getElementById("steps");
+  if (stepsSection) obs.observe(stepsSection);
 }
 
 // =========================
@@ -216,9 +232,7 @@ function initPackageSelect(){
       const calc = document.getElementById("quote-calculator");
       if (calc) calc.scrollIntoView({ behavior: "smooth", block: "start" });
 
-      setTimeout(() => {
-        btnCalc?.click();
-      }, 250);
+      setTimeout(() => btnCalc?.click(), 250);
     });
   });
 }
@@ -278,8 +292,7 @@ function initPackagesWhatsApp() {
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
       const tierKey = btn.getAttribute("data-wa-tier") || "basic";
-      const msg = buildTierWhatsAppMessage(tierKey);
-      window.open(buildWhatsAppLink(msg), "_blank", "noopener,noreferrer");
+      window.open(buildWhatsAppLink(buildTierWhatsAppMessage(tierKey)), "_blank", "noopener,noreferrer");
     });
   });
 }
@@ -325,6 +338,114 @@ function initWhatsApp() {
   });
 }
 
+/* =========================================================
+   SERVICES MINDMAP STRINGS (Correct nucleus -> 4 branches)
+   - Draws lines from the title to each card
+   - Sits behind the cards (so never covers card text)
+   - Animates on scroll into Services
+========================================================= */
+function initServicesMindmapStrings(){
+  const section = document.getElementById("services");
+  const svg = document.getElementById("servicesStrings");
+  const title = document.getElementById("servicesTitle");
+
+  const targets = [
+    document.getElementById("svc-smm"),
+    document.getElementById("svc-sfc"),
+    document.getElementById("svc-brand"),
+    document.getElementById("svc-flyer"),
+  ].filter(Boolean);
+
+  if (!section || !svg || !title || targets.length !== 4) return;
+
+  let hasAnimated = false;
+
+  const draw = () => {
+    // Clear
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    // Get section box for local coordinates
+    const wrapBox = section.querySelector(".services-wrap")?.getBoundingClientRect();
+    if (!wrapBox) return;
+
+    const w = Math.max(1, Math.floor(wrapBox.width));
+    const h = Math.max(1, Math.floor(wrapBox.height));
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    svg.setAttribute("width", String(w));
+    svg.setAttribute("height", String(h));
+
+    const tBox = title.getBoundingClientRect();
+    const startX = (tBox.left - wrapBox.left) + (tBox.width / 2);
+    const startY = (tBox.bottom - wrapBox.top) + 10; // just under the heading
+
+    targets.forEach((el, i) => {
+      const b = el.getBoundingClientRect();
+      const endX = (b.left - wrapBox.left) + (b.width / 2);
+      const endY = (b.top - wrapBox.top) + 18; // near top of card (safe)
+
+      // Curvy mindmap feel: control points
+      const midY = startY + ((endY - startY) * 0.55);
+      const bend = (endX - startX) * 0.22;
+
+      const c1x = startX + bend;
+      const c1y = midY - 22;
+      const c2x = endX - bend;
+      const c2y = midY + 22;
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("class", "string");
+      path.setAttribute("d", `M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`);
+      svg.appendChild(path);
+
+      // Prep draw animation
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = `${len}`;
+      path.style.strokeDashoffset = hasAnimated ? "0" : `${len}`;
+      path.style.transitionDelay = `${i * 90}ms`;
+    });
+
+    // Add class so CSS transitions apply
+    svg.classList.add("animate");
+  };
+
+  const animateIn = () => {
+    // Run draw first (so lengths exist)
+    draw();
+
+    // Next frame: animate dashoffset to 0
+    requestAnimationFrame(() => {
+      const paths = svg.querySelectorAll(".string");
+      paths.forEach(p => {
+        p.style.strokeDashoffset = "0";
+      });
+      hasAnimated = true;
+    });
+  };
+
+  // Observe section (Option 2: animate on scroll into Services)
+  const obs = new IntersectionObserver((entries) => {
+    const entry = entries[0];
+    if (entry.isIntersecting && !hasAnimated) {
+      animateIn();
+    }
+  }, { threshold: 0.35 });
+
+  obs.observe(section);
+
+  // Redraw on resize (keeps connections perfect)
+  let t;
+  window.addEventListener("resize", () => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      // keep already-animated lines visible
+      draw();
+      if (hasAnimated) {
+        svg.querySelectorAll(".string").forEach(p => (p.style.strokeDashoffset = "0"));
+      }
+    }, 120);
+  });
+}
+
 // =========================
 // Init
 // =========================
@@ -334,7 +455,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initProgressBar();
   initScrollSpy();
+
+  initServicesMindmapStrings();
+
   initReveal();
+  initStepsReveal();
 
   initCalculator();
   initFromLabelSync();
