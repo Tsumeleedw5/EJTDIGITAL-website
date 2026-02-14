@@ -61,37 +61,47 @@
         </div>
       </section>
 
-      <!-- SERVICES -->
+      <!-- SERVICES (MINDMAP STRINGS) -->
       <section id="services" class="section">
-        <div class="section-white">
-          <h2 class="section-title">Our Brand Scaling Services</h2>
+        <div class="section-white services-wrap">
+          <!-- SVG is injected/updated by JS (so it always connects perfectly) -->
+          <svg id="servicesStrings" class="services-strings" aria-hidden="true"></svg>
 
-          <div class="service-grid">
-            <div class="panel">
-              <h3>Social Media Management</h3>
-              <p>Consistent posting, strategy, engagement, and platform optimization built to grow your audience.</p>
+          <div class="services-head">
+            <h2 class="section-title" id="servicesTitle">Our Brand Scaling Services</h2>
+            <p class="services-sub" id="servicesSub">
+              A focused system: content, identity, and conversion — built to scale service businesses.
+            </p>
+          </div>
+
+          <div class="services-layout">
+            <!-- Top row -->
+            <div class="services-top">
+              <div class="service-card" id="svc-smm">
+                <h3>Social Media Management</h3>
+                <p>Consistent posting, strategy, engagement, and platform optimization built to grow your audience.</p>
+              </div>
+
+              <div class="service-card" id="svc-sfc">
+                <h3>Short-Form Content</h3>
+                <p>High-impact reels, TikToks, and shorts designed to capture attention and increase reach.</p>
+              </div>
+
+              <div class="service-card" id="svc-brand">
+                <h3>Logo & Brand Identity</h3>
+                <p>Clean, scalable brand identities that stay consistent across all platforms.</p>
+              </div>
             </div>
 
-            <div class="panel">
-              <h3>Short-Form Content</h3>
-              <p>High-impact reels, TikToks, and shorts designed to capture attention and increase reach.</p>
-            </div>
-
-            <div class="panel">
-              <h3>Video Editing</h3>
-              <p>Professional edits for promotions, content, and brand storytelling.</p>
-            </div>
-
-            <div class="panel">
-              <h3>Logo & Brand Identity</h3>
-              <p>Clean, scalable brand identities that stay consistent across all platforms.</p>
-            </div>
-
-            <div class="panel">
-              <h3>Flyer & Digital Design</h3>
-              <p>Promotional designs that support campaigns, launches, and offers.</p>
+            <!-- Bottom centered -->
+            <div class="services-bottom">
+              <div class="service-card service-card-wide" id="svc-flyer">
+                <h3>Flyer & Digital Design</h3>
+                <p>Promotional designs that support campaigns, launches, and offers — aligned with your premium brand look.</p>
+              </div>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -215,7 +225,7 @@
         </div>
       </section>
 
-      <!-- ABOUT (with animated logo + slogan) -->
+      <!-- ABOUT (animated logo + slogan) -->
       <section id="about" class="section">
         <div class="section-glass reveal" data-reveal>
           <h2 class="section-title section-title--light">Who We Are</h2>
@@ -274,25 +284,25 @@
         </div>
       </section>
 
-      <!-- HOW IT WORKS -->
+      <!-- HOW IT WORKS (ANIMATED IN) -->
       <section id="steps" class="section steps">
         <div class="steps-wrap">
-          <h2 class="steps-title">How We Scale Your Brand</h2>
+          <h2 class="steps-title reveal" data-reveal>How We Scale Your Brand</h2>
 
           <div class="steps-row">
-            <div class="bubble bubble-1">1. Contact us via form, WhatsApp, or email</div>
-            <div class="arrow">➜</div>
+            <div class="bubble bubble-1 bubble-reveal" data-step>1. Contact us via form, WhatsApp, or email</div>
+            <div class="arrow arrow-reveal" data-step>➜</div>
 
-            <div class="bubble bubble-2">2. Receive your estimated quote</div>
-            <div class="arrow">➜</div>
+            <div class="bubble bubble-2 bubble-reveal" data-step>2. Receive your estimated quote</div>
+            <div class="arrow arrow-reveal" data-step>➜</div>
 
-            <div class="bubble bubble-3">3. Book a virtual meeting</div>
-            <div class="arrow">➜</div>
+            <div class="bubble bubble-3 bubble-reveal" data-step>3. Book a virtual meeting</div>
+            <div class="arrow arrow-reveal" data-step>➜</div>
 
-            <div class="bubble bubble-4">4. We design your custom brand scaling system</div>
-            <div class="arrow">➜</div>
+            <div class="bubble bubble-4 bubble-reveal" data-step>4. We design your custom brand scaling system</div>
+            <div class="arrow arrow-reveal" data-step>➜</div>
 
-            <div class="bubble bubble-5">5. We begin scaling your brand</div>
+            <div class="bubble bubble-5 bubble-reveal" data-step>5. We begin scaling your brand</div>
           </div>
         </div>
       </section>
